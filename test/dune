@@ -1,0 +1,4 @@
+(tests
+ (names test_note test_io test_op)
+ (libraries subtext unix ounit2)
+)

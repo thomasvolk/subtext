@@ -1,0 +1,2 @@
+
+exception InterruptExecution of string
