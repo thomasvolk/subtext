@@ -38,7 +38,19 @@ Revert the renaming above:
 
     subtext batch-rename -d example -n example .
 
+## Build and install
+
+First you have to install [OCaml](https://ocaml.org/) and dune.
+
+Compile:
+
+    dune build
+
+Copy the binary to you bin directory:
+
+    cp _build/install/default/bin/subtext /usr/local/bin 
+
 ## Links
 
-see also: https://github.com/polyrainbow/neno/
+See also: https://github.com/polyrainbow/neno/
 
