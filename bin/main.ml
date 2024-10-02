@@ -8,6 +8,20 @@ let validate_exn name = match Note.Key.is_valid name with
   | true -> name
   | false -> raise (Exn.InterruptExecution ("invalid key: " ^ name))
 
+let graph =
+ Command.basic
+    ~summary:"graph command"
+     (let%map_open.Command 
+     file_extension = file_extension_flag
+     and base_dir = base_dir_flag 
+     and target = anon ("output dot file" %: string) in
+       fun () -> 
+         let r = Io.FileRepository.create ~base_dir:base_dir ~file_extension:file_extension ~read_only:true in
+         let nl = Io.FileRepository.read_notes r in
+         let out = Op.Graph.create nl in
+         Io.write_file_exn target out
+       )
+
 let batch_rename_command =
  Command.basic
     ~summary:"batch rename command"
@@ -42,7 +56,8 @@ let main_command =
   Command.group ~summary:"subtext management tool"
     [ 
       ("rename", rename_command);
-      ("batch-rename", batch_rename_command)
+      ("batch-rename", batch_rename_command);
+      ("graph", graph)
     ]
 
 let () = 

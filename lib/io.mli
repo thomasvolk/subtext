@@ -1,5 +1,6 @@
 open Op
 
+val write_file_exn : string -> string -> unit
 
 module FileRepository : sig
   type t = { file_extension: string; base_dir: string; read_only: bool }

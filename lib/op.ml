@@ -119,3 +119,8 @@ module Rename = struct
 
   end
 end
+
+
+module Graph = struct
+  let create _nl =  ""
+end

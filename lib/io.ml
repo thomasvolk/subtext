@@ -1,4 +1,10 @@
 
+let write_file_exn f c =
+  let oc = open_out f in
+  Printf.fprintf oc "%s" c;
+  close_out oc
+
+
 module FileRepository = struct
   type t = { file_extension: string; base_dir: string; read_only: bool }
     
@@ -59,11 +65,6 @@ module FileRepository = struct
     let td = Filename.dirname t in
     mkdirs_exn td 0o700;
     Sys.rename s t
-
-  let write_file_exn f c =
-    let oc = open_out f in
-    Printf.fprintf oc "%s" c;
-    close_out oc
 
   let chop_base_dir r p = 
      let cnt = List.length (split r.base_dir)
