@@ -60,6 +60,24 @@ let tests =
         ]
         (Op.Rename.Batch.parse_pattern "foo/" "." nl)
     );
+
+    "generate graph" >:: (fun _ ->
+      let nl = [
+        Note.create "a" " /a  /x ";
+        Note.create "b" "   /a    /x";
+        Note.create "c" "";
+        Note.create "x" " /c  /a  ";
+      ] in
+      assert_equal ~printer:Print.string {|digraph test {
+"a" -> "a";
+"a" -> "x";
+"b" -> "a";
+"b" -> "x";
+"x" -> "c";
+"x" -> "a";
+}|} (Op.DotGraph.create "test" nl)
+      
+    );
   ]
 
 let _ = 
