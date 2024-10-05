@@ -121,11 +121,12 @@ module Rename = struct
 end
 
 
-module Graph = struct
+module DotGraph = struct
 
-  let to_edge a b = (Note.Key.to_string a) ^ " -> " ^ (Note.Key.to_string b)
+  let to_edge a b = (Note.Key.to_string a) ^ " -> " ^ (Note.Key.to_string b) ^ ";"
 
   let edges n = List.map (fun r -> to_edge (Note.key n) (Note.Reference.to_key r)) (Note.Reference.find_all (Note.text n))
 
-  let create nl = List.map edges nl |> List.flatten |> String.concat "\n"
+  let create name nl = let e = List.map edges nl |> List.flatten |> String.concat "\n" in 
+     "digraph " ^ name ^ " {\n" ^ e ^ "\n}"
 end

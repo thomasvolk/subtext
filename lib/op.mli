@@ -39,6 +39,6 @@ end
 val string_of_action : Command.action -> string
 
 
-module Graph : sig
-  val create : Note.t list -> string
+module DotGraph : sig
+  val create : string -> Note.t list -> string
 end

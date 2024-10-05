@@ -14,11 +14,12 @@ let graph =
      (let%map_open.Command 
      file_extension = file_extension_flag
      and base_dir = base_dir_flag 
-     and target = anon ("output dot file" %: string) in
+     and name = anon ("graph name" %: string) in
        fun () -> 
          let r = Io.FileRepository.create ~base_dir:base_dir ~file_extension:file_extension ~read_only:true in
          let nl = Io.FileRepository.read_notes r in
-         let out = Op.Graph.create nl in
+         let out = Op.DotGraph.create name nl in
+         let target = name ^ ".dot" in
          Io.write_file_exn target out
        )
 
