@@ -87,6 +87,8 @@ module Reference = struct
     | SlashLink -> SlashLink.to_repr name
     | WikiLink -> WikiLink.to_repr name
 
+  let to_key r = r.key
+
   let replace text old_key new_key =
       let refs = find_all text
             |> List.filter (fun r -> r.key = old_key)

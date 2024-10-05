@@ -58,6 +58,8 @@ module Reference : sig
 
   val find_all : string -> t list
 
+  val to_key : t -> Key.t
+
   val to_repr : Key.t -> kind -> string
 
   val replace : string -> Key.t -> Key.t -> string option
