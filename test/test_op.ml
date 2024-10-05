@@ -65,7 +65,7 @@ let tests =
       let nl = [
         Note.create "a" " /a  /x ";
         Note.create "b" "   /a    /x";
-        Note.create "c" "";
+        Note.create "c" " /file/pic.png";
         Note.create "x" " /c  /a  ";
       ] in
       assert_equal ~printer:Print.string {|digraph test {

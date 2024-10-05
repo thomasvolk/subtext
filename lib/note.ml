@@ -29,7 +29,7 @@ module Reference = struct
 
 
   module SlashLink = struct 
-    let regex = Re.Perl.compile_pat ("([\\s]+|^)(\\/" ^ Key.allowed_chars ^ "+)+")
+    let regex = Re.Perl.compile_pat ("(\\s|^)(\\/" ^ Key.allowed_chars ^ "+)+(\\s|$)")
 
     let to_key r = 
       let tr = String.trim r in
