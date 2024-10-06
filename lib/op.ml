@@ -19,18 +19,18 @@ let string_of_action =
 module type Repository = sig
   type t
   val read_notes : t -> Note.t list
-  val execute_exn : t -> Command.action -> unit
+  val execute : t -> Command.action -> unit
 end
 
 
 module MakeCommandRunner (R : Repository) = struct
-  let rec run_exn r c = 
+  let rec run r c = 
     let open Command in
     match c with
       | Stop -> ()
       | Action (a, s) -> 
-          R.execute_exn r a;
-          run_exn r s
+          R.execute r a;
+          run r s
 end
 
 
@@ -104,18 +104,18 @@ module Rename = struct
   module Make (R : Repository) = struct
     module CR = MakeCommandRunner(R)
 
-    let rename_note_exn r o n = 
+    let rename_note r o n = 
       let nl = R.read_notes r in
       let c = command nl o n in
-      CR.run_exn r c
+      CR.run r c
       
-    let rename_exn r o n = 
-      rename_note_exn r (Note.Key.create o) (Note.Key.create n)
+    let rename r o n = 
+      rename_note r (Note.Key.create o) (Note.Key.create n)
       
-    let batch_rename_exn r s t = 
+    let batch_rename r s t = 
       let nl = R.read_notes r in
       Batch.parse_pattern s t nl
-      |> List.iter (fun (o, n) -> rename_note_exn r o n)
+      |> List.iter (fun (o, n) -> rename_note r o n)
 
   end
 end

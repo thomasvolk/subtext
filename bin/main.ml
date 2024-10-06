@@ -17,7 +17,7 @@ let graph =
          let nl = Io.FileRepository.read_notes r in
          let out = Op.DotGraph.create name nl in
          match output_file with
-         | Some f -> Io.write_file_exn f out
+         | Some f -> Io.write_file f out
          | None -> print_endline out
        )
 
@@ -33,7 +33,7 @@ let batch_rename_command =
        fun () -> 
          let r = Io.LoggingFileRepository.create ~base_dir:base_dir ~file_extension:file_extension ~read_only:dry_run in
          let module ST = Op.Rename.Make (Io.LoggingFileRepository) in
-         ST.batch_rename_exn r source target
+         ST.batch_rename r source target
        )
 
 let rename_command =
@@ -48,7 +48,7 @@ let rename_command =
        fun () -> 
          let r = Io.LoggingFileRepository.create ~base_dir:base_dir ~file_extension:file_extension ~read_only:dry_run in
          let module ST = Op.Rename.Make (Io.LoggingFileRepository) in
-         ST.rename_exn r old_name new_name
+         ST.rename r old_name new_name
        )
 
 let main_command =

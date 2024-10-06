@@ -13,20 +13,20 @@ module type Repository = sig
 
   val read_notes : t -> Note.t list
 
-  val execute_exn : t -> Command.action -> unit
+  val execute : t -> Command.action -> unit
 end
 
 
 module MakeCommandRunner : functor (R : Repository) -> sig
-  val run_exn : R.t -> Command.t -> unit
+  val run : R.t -> Command.t -> unit
 end
 
 
 module Rename : sig
   module Make : functor (R : Repository) -> sig
-    val rename_exn : R.t -> string -> string -> unit 
+    val rename : R.t -> string -> string -> unit 
 
-    val batch_rename_exn : R.t -> string -> string -> unit 
+    val batch_rename : R.t -> string -> string -> unit 
   end
 
   module Batch : sig

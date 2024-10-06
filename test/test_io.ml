@@ -30,20 +30,20 @@ hello this is a [[wiki link]]
 
     "rename" >:: (fun _ ->
       let new_note_path = (Filename.concat base_dir "A/B/C/1.subtext") in
-      ST.rename_exn ror "1" "A/B/C/1";
+      ST.rename ror "1" "A/B/C/1";
 
       assert_bool "file A/B/C/1.subtext exists but dry-run mode was enabled" (not (Sys.file_exists new_note_path));
 
-      ST.rename_exn rwr "1" "A/B/C/1";
+      ST.rename rwr "1" "A/B/C/1";
 
       assert_bool "file A/B/C/1.subtext does not exists" (Sys.file_exists new_note_path)
     );
     "rename to an existing file" >:: (fun _ ->
-      let expected_exn = (Subtext.Exn.InterruptExecution ("rename fails - file already exists: " ^ (Filename.concat base_dir ("foo" ^ ".subtext")))) in
-      ST.rename_exn ror "foo" "foo";
+      let expected = (Subtext.Exn.InterruptExecution ("rename fails - file already exists: " ^ (Filename.concat base_dir ("foo" ^ ".subtext")))) in
+      ST.rename ror "foo" "foo";
 
-      assert_raises ~msg:"exception does not match" expected_exn  (fun () -> 
-        ST.rename_exn rwr "foo" "foo"
+      assert_raises ~msg:"exception does not match" expected  (fun () -> 
+        ST.rename rwr "foo" "foo"
       );
     );
 ]

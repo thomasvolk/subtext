@@ -1,5 +1,5 @@
 
-let write_file_exn f c =
+let write_file f c =
   let oc = open_out f in
   Printf.fprintf oc "%s" c;
   close_out oc
@@ -47,23 +47,23 @@ module FileRepository = struct
     else if is_directory f then Directory
     else File
 
-  let mkdirs_exn p perm =
-    let rec mkdir_exn b = function
+  let mkdirs p perm =
+    let rec mkdir b = function
       | [] -> ()
       | h::tl -> let d = Filename.concat b h in
                   match file_stat d with
-                  | Directory -> mkdir_exn d tl
-                  | NotFound -> Sys.mkdir d perm; mkdir_exn d tl
+                  | Directory -> mkdir d tl
+                  | NotFound -> Sys.mkdir d perm; mkdir d tl
                   | File ->  raise (Exn.InterruptExecution ("can not create directory: " ^ p ^ " - " ^ d ^ " is a file")) 
     in
-    mkdir_exn "" (split p)
+    mkdir "" (split p)
 
-  let move_file_exn s t = 
+  let move_file s t = 
     if (file_exists t)
     then raise (Exn.InterruptExecution ("rename fails - file already exists: " ^ t))
     else
     let td = Filename.dirname t in
-    mkdirs_exn td 0o700;
+    mkdirs td 0o700;
     Sys.rename s t
 
   let chop_base_dir r p = 
@@ -93,17 +93,17 @@ module FileRepository = struct
     in
     { file_extension = file_ext; base_dir = base_dir; read_only  = read_only }
 
-  let execute_action_exn r a = 
+  let execute_action r a = 
     let open Op.Command in
     match a with
-      | WriteNote (n, t) -> write_file_exn (to_filename r n) t
+      | WriteNote (n, t) -> write_file (to_filename r n) t
       | RenameNote (o, n) -> 
           let tp =  (to_filename r n) in
-          move_file_exn (to_filename r o) tp
+          move_file (to_filename r o) tp
 
-  let execute_exn r a = 
+  let execute r a = 
       if not r.read_only then
-        execute_action_exn r a
+        execute_action r a
 end
 
 module LoggingFileRepository = struct
@@ -115,7 +115,7 @@ module LoggingFileRepository = struct
 
   let read_notes = FileRepository.read_notes
 
-  let execute_exn r a = 
+  let execute r a = 
     Format.printf "execute action: %s\n" (Op.string_of_action a);
-    FileRepository.execute_exn r a
+    FileRepository.execute r a
 end

@@ -1,13 +1,13 @@
 open Op
 
-val write_file_exn : string -> string -> unit
+val write_file : string -> string -> unit
 
 module FileRepository : sig
   type t = { file_extension: string; base_dir: string; read_only: bool }
     
   val read_notes : t -> Note.t list
 
-  val execute_exn : t -> Command.action -> unit
+  val execute : t -> Command.action -> unit
 
   val create : base_dir:string -> file_extension:string -> read_only:bool -> t
 end
@@ -18,7 +18,7 @@ module LoggingFileRepository : sig
     
   val read_notes : t -> Note.t list
 
-  val execute_exn : t -> Command.action -> unit
+  val execute : t -> Command.action -> unit
 
   val create : base_dir:string -> file_extension:string -> read_only:bool -> t
 end
