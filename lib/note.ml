@@ -8,7 +8,10 @@ module Key = struct
 
   let is_valid name = List.length (Re.matches regex name) > 0
 
-  let create n = { name = n }
+  let create n = match is_valid n with
+  | true -> { name = n }
+  | false -> raise (Exn.InterruptExecution ("invalid key: " ^ n))
+    
 
   let to_string k = k.name
 end

@@ -4,10 +4,6 @@ let file_extension_flag = let open Command.Param in flag "-e" (optional_with_def
 let base_dir_flag = let open Command.Param in flag "-d" (optional_with_default "." string) ~doc:" base dir for operation"
 let dry_run_flag = let open Command.Param in flag "-n" no_arg ~doc:" dry run"
 
-let validate_exn name = match Note.Key.is_valid name with
-  | true -> name
-  | false -> raise (Exn.InterruptExecution ("invalid key: " ^ name))
-
 let graph =
  Command.basic
     ~summary:"graph command"
@@ -52,7 +48,7 @@ let rename_command =
        fun () -> 
          let r = Io.LoggingFileRepository.create ~base_dir:base_dir ~file_extension:file_extension ~read_only:dry_run in
          let module ST = Op.Rename.Make (Io.LoggingFileRepository) in
-         ST.rename_exn r (validate_exn old_name) (validate_exn new_name)
+         ST.rename_exn r old_name new_name
        )
 
 let main_command =
