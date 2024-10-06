@@ -38,6 +38,17 @@ Revert the renaming above:
 
     subtext batch-rename -d example -n example .
 
+
+## graph
+
+The graph command crates a [dot](https://graphviz.org/docs/layouts/dot/) grapth
+that can be further processed to an image. Here is an example with the graphviz dot command:
+
+    subtext graph -d example example_graph | dot -Tsvg > example/example.svg
+
+![example.svg](example/example.svg)
+
+
 ## Build and install
 
 First you have to install [OCaml](https://ocaml.org/) and dune.
