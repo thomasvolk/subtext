@@ -128,5 +128,5 @@ module DotGraph = struct
   let edges n = List.map (fun r -> to_edge (Note.key n) (Note.Reference.to_key r)) (Note.Reference.find_all (Note.text n))
 
   let create name nl = let e = List.map edges nl |> List.flatten |> String.concat "\n" in 
-     "digraph " ^ name ^ " {\n" ^ e ^ "\n}"
+     "digraph \"" ^ name ^ "\" {\n" ^ e ^ "\n}"
 end

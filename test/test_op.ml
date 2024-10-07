@@ -68,7 +68,7 @@ let tests =
         Note.create "c" " /file/pic.png";
         Note.create "x" " /c  /a  ";
       ] in
-      assert_equal ~printer:Print.string {|digraph test {
+      assert_equal ~printer:Print.string {|digraph "test" {
 "a" -> "a";
 "a" -> "x";
 "b" -> "a";
