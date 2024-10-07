@@ -53,6 +53,10 @@ that can be further processed to an image. Here is an example with the graphviz 
 
 First you have to install [OCaml](https://ocaml.org/) and dune.
 
+Install libraries:
+
+    opam install core_unix re ppx_jane ounit2
+
 Compile:
 
     dune build
