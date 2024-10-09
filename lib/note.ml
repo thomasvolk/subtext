@@ -99,7 +99,7 @@ module Reference = struct
       match refs with
         | [] -> None
         | rl -> Some (
-          List.fold_left (fun t r -> Re2.replace_exn (Re2.create_exn r.repr) ~f:(fun _ -> (to_repr new_key r.kind)) t) text rl
+          List.fold_left (fun t r -> Re2.replace_exn (Re2.create_exn (Re2.escape r.repr)) ~f:(fun _ -> (to_repr new_key r.kind)) t) text rl
         )
 
 end
