@@ -55,7 +55,7 @@ First you have to install [OCaml](https://ocaml.org/) and dune.
 
 Install libraries:
 
-    opam install core_unix re ppx_jane ounit2
+    opam install core_unix re2 ppx_jane ounit2
 
 Compile:
 
