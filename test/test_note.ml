@@ -41,7 +41,7 @@ let tests =
       (Reference.find_all " [[ Foo 1 // bar ]] ");
     );
 
-    "WikiLink.normaize" >:: (fun _ ->
+    "WikiLink.normalize" >:: (fun _ ->
       let to_key t = Reference.WikiLink.to_key t in
 
       assert_equal ~printer:Print.note_key (Key.create "foo-1-a") (to_key "  foo-1-a   ");
@@ -55,7 +55,7 @@ let tests =
       assert_equal ~printer:Print.note_key (Key.create "bar-1-a") (to_key "  Bar / 1 A   ");
     );
 
-    "SlashLink.normaize" >:: (fun _ ->
+    "SlashLink.normalize" >:: (fun _ ->
       let to_key t = Reference.SlashLink.to_key t in
 
       assert_equal ~printer:Print.note_key (Key.create "foo-1-a") (to_key "  /fOo-1-A   ");
