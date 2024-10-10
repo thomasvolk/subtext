@@ -2,7 +2,7 @@
 module Key = struct
   type t = { name: string }
 
-  let allowed_chars = "[A-Za-z0-9_\\-äöüÄÖÜß]" 
+  let allowed_chars = "[\\p{L}\\p{M}\\d_\\-]"
 
   let regex = Re2.create_exn ("^(" ^ allowed_chars ^ ")+(\\/" ^ allowed_chars ^ "+)*$")
 
