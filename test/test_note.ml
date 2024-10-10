@@ -17,6 +17,8 @@ let tests =
 
       assert_bool "ending with / must not be valid" (not (is_valid "foo/"));
 
+      assert_bool "names with spaces must not be valid" (not (is_valid "foo bar"));
+
       assert_bool "names like 'Ab_cd-98-äüö' must be valid" (is_valid "Ab_cd-98-äöü");
 
       assert_bool "Names with Japanese chars must be valid" (is_valid "グーゴルプレックス");
