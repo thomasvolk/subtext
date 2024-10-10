@@ -18,9 +18,15 @@ let tests =
       assert_bool "ending with / must not be valid" (not (is_valid "foo/"));
 
       assert_bool "names like 'Ab_cd-98-äüö' must be valid" (is_valid "Ab_cd-98-äöü");
+
+      assert_bool "Names with Japanese chars must be valid" (is_valid "グーゴルプレックス");
+
+      assert_bool "Names with Arabic chars must be valid" (is_valid "الخط-العربي-جميل");
+
+      assert_bool "Names with Icelandic chars must be valid" (is_valid "hæ-gaman-að-kynnast-þér");
     );
 
-    "find_referneces" >:: (fun _ ->
+    "find_references" >:: (fun _ ->
       assert_equal ~printer:Print.reference_list
       [
         (Reference.SlashLink.create "/foo" "foo" );
