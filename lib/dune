@@ -1,4 +1,4 @@
 (library
  (name subtext)
- (libraries core_unix.sys_unix re str)
+ (libraries core_unix.sys_unix re2 str)
 )

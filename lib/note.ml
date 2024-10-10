@@ -2,11 +2,11 @@
 module Key = struct
   type t = { name: string }
 
-  let allowed_chars = "[A-Za-z0-9_\\-äöüÄÖÜß]" 
+  let allowed_chars = "[\\p{L}\\p{M}\\d_\\-]"
 
-  let regex = Re.Perl.compile_pat ("^(" ^ allowed_chars ^ ")+(\\/" ^ allowed_chars ^ "+)*$")
+  let regex = Re2.create_exn ("^(" ^ allowed_chars ^ ")+(\\/" ^ allowed_chars ^ "+)*$")
 
-  let is_valid name = List.length (Re.matches regex name) > 0
+  let is_valid = Re2.matches regex
 
   let create n = match is_valid n with
   | true -> { name = n }
@@ -32,7 +32,7 @@ module Reference = struct
 
 
   module SlashLink = struct 
-    let regex = Re.Perl.compile_pat ("(\\s|^)(\\/" ^ Key.allowed_chars ^ "+)+(\\s|$)")
+    let regex = Re2.create_exn ("(\\s|^)(\\/" ^ Key.allowed_chars ^ "+)+(\\s|$)")
 
     let to_key r = 
       let tr = String.trim r in
@@ -43,10 +43,10 @@ module Reference = struct
     let to_repr t = "/" ^ (Key.to_string t)
 
     let find_all text =
-      Re.all regex text
+      Re2.get_matches_exn regex text
       |> List.map (fun m -> {
-        repr = (String.trim (Re.Group.get m 0));
-        key = to_key (Re.Group.get m 0);
+        repr = (String.trim (Re2.Match.get_exn m ~sub:(`Index 0)));
+        key = to_key (Re2.Match.get_exn m ~sub:(`Index 0));
         kind = SlashLink
       })
     
@@ -55,30 +55,30 @@ module Reference = struct
 
 
   module WikiLink = struct 
-    let regex = Re.Perl.compile_pat "\\[\\[([A-Za-z0-9\\/\\-\\s]+)\\]\\]"
+    let regex = Re2.create_exn "\\[\\[([A-Za-z0-9\\/\\-\\s]+)\\]\\]"
 
     let to_key r = r
       |> String.trim
-      |> Re.replace_string (Re.Perl.compile_pat "\\/{3,}") ~by:" "
-      |> Re.split (Re.Perl.compile_pat "\\/\\/")
-      |> List.map (fun s -> Re.replace_string (Re.Perl.compile_pat "\\/") ~by:" " s)
+      |> Re2.replace_exn (Re2.create_exn "\\/{3,}") ~f:(fun _ -> " ")
+      |> Re2.split (Re2.create_exn "\\/\\/")
+      |> List.map (fun s -> Re2.replace_exn (Re2.create_exn "\\/") ~f:(fun _ -> " ") s)
       |> List.map String.trim
       |> List.fold_left Filename.concat ""
-      |> Re.replace_string (Re.Perl.compile_pat "[\\s]+") ~by:"-"
+      |> Re2.replace_exn (Re2.create_exn "[\\s]+") ~f:(fun _ -> "-")
       |> String.lowercase_ascii
       |> Key.create
 
     let find_all text =
-      Re.all regex text
-      |> List.map (fun m -> 
-        { repr = Re.Group.get m 0;
-          key = to_key (Re.Group.get m 1); 
-          kind = WikiLink
-        })
+      Re2.get_matches_exn regex text
+      |> List.map (fun m -> {
+        repr = Re2.Match.get_exn m ~sub:(`Index 0);
+        key = to_key (Re2.Match.get_exn m ~sub:(`Index 1)); 
+        kind = WikiLink
+      })
 
     let to_repr t = "[[ " ^ ((Key.to_string t)
-                          |> Re.replace_string (Re.Perl.compile_pat "\\/") ~by:"//"
-                          |> Re.replace_string (Re.Perl.compile_pat "\\-") ~by:" "
+                          |> Re2.replace_exn (Re2.create_exn "\\/") ~f:(fun _ -> "//")
+                          |> Re2.replace_exn (Re2.create_exn "\\-") ~f:(fun _ -> " ")
                          ) ^ " ]]"
 
     let create repr key = { repr = repr; key = Key.create key; kind = WikiLink }
@@ -99,7 +99,7 @@ module Reference = struct
       match refs with
         | [] -> None
         | rl -> Some (
-          List.fold_left (fun t r -> Re.replace_string (Re.Perl.compile (Re.str r.repr)) ~by:(to_repr new_key r.kind) t) text rl
+          List.fold_left (fun t r -> Re2.replace_exn (Re2.create_exn (Re2.escape r.repr)) ~f:(fun _ -> (to_repr new_key r.kind)) t) text rl
         )
 
 end
