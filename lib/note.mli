@@ -32,33 +32,11 @@ module Reference : sig
 
   type t = { repr: string; key: Key.t; kind: kind }
 
-
-  module SlashLink : sig
-
-    val to_key : string -> Key.t 
-
-    val to_repr : Key.t -> string
-
-    val find_all : string -> t list
-    
-    val create : string -> string -> t
-  end
-
-
-  module WikiLink : sig
-    val to_key : string -> Key.t 
-
-    val to_repr : Key.t -> string
-
-    val find_all : string -> t list
-    
-    val create : string -> string -> t
-  end
-
-
-  val find_all : string -> t list
+  val parse : string -> t list
 
   val to_key : t -> Key.t
+
+  val to_tuple : t -> Key.t * string * kind
 
   val to_repr : Key.t -> kind -> string
 

@@ -11,7 +11,6 @@ module Key = struct
   let create n = match is_valid n with
   | true -> { name = n }
   | false -> raise (Exn.InterruptExecution ("invalid key: " ^ n))
-    
 
   let to_string k = k.name
 end
@@ -30,7 +29,6 @@ module Reference = struct
 
   type t = { repr: string; key: Key.t; kind: kind }
 
-
   module SlashLink = struct 
     let regex = Re2.create_exn ("(\\s|^)(\\/" ^ Key.allowed_chars ^ "+)+(\\s|$)")
 
@@ -42,15 +40,13 @@ module Reference = struct
 
     let to_repr t = "/" ^ (Key.to_string t)
 
-    let find_all text =
+    let parse text =
       Re2.get_matches_exn regex text
       |> List.map (fun m -> {
         repr = (String.trim (Re2.Match.get_exn m ~sub:(`Index 0)));
         key = to_key (Re2.Match.get_exn m ~sub:(`Index 0));
         kind = SlashLink
       })
-    
-    let create repr key = { repr = repr; key = Key.create key; kind = SlashLink }
   end
 
 
@@ -68,7 +64,7 @@ module Reference = struct
       |> String.lowercase_ascii
       |> Key.create
 
-    let find_all text =
+    let parse text =
       Re2.get_matches_exn regex text
       |> List.map (fun m -> {
         repr = Re2.Match.get_exn m ~sub:(`Index 0);
@@ -80,20 +76,20 @@ module Reference = struct
                           |> Re2.replace_exn (Re2.create_exn "\\/") ~f:(fun _ -> "//")
                           |> Re2.replace_exn (Re2.create_exn "\\-") ~f:(fun _ -> " ")
                          ) ^ " ]]"
-
-    let create repr key = { repr = repr; key = Key.create key; kind = WikiLink }
   end
 
-  let find_all text = (SlashLink.find_all text) @ (WikiLink.find_all text)
+  let parse text = (SlashLink.parse text) @ (WikiLink.parse text)
 
   let to_repr name kind = match kind with 
     | SlashLink -> SlashLink.to_repr name
     | WikiLink -> WikiLink.to_repr name
 
+  let to_tuple r = (r.key, r.repr, r.kind)
+
   let to_key r = r.key
 
   let replace text old_key new_key =
-      let refs = find_all text
+      let refs = parse text
             |> List.filter (fun r -> r.key = old_key)
       in
       match refs with

@@ -11,6 +11,14 @@ let note n =
 
 let note_list l = String.concat " " (List.map note l)
 
+let reference_kind = function 
+| Note.Reference.WikiLink -> "WikiLink"
+| Note.Reference.SlashLink -> "SlashLink"
+
+let reference_tuple (k, r, kd) = (Note.Key.to_string k) ^ ", " ^ r ^ ", " ^ (reference_kind kd) 
+
+let reference_tuple_list l = List.map reference_tuple l |> String.concat " - "
+
 let reference r = 
   let open Note.Reference in
   let kind = match r.kind with
