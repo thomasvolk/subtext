@@ -1,16 +1,16 @@
 
-module Command = struct
-  type action = 
-    | WriteNote of Note.Key.t * string
-    | RenameNote of Note.Key.t * Note.Key.t
+type action = 
+  | WriteNote of Note.Key.t * string
+  | RenameNote of Note.Key.t * Note.Key.t
 
-  type t = Stop | Action of action * t
+  
+module Command = struct
+  type 'a t = Stop | Action of 'a * 'a t
 end
 
 
 let string_of_action =
   let open Note.Key in
-  let open Command in
   function
   | (WriteNote (k, _)) -> "write note: " ^ (to_string k)
   | (RenameNote (o, n)) -> "rename note form " ^ (to_string o) ^ " to " ^ (to_string n)
@@ -19,7 +19,7 @@ let string_of_action =
 module type Repository = sig
   type t
   val read_notes : t -> Note.t list
-  val execute : t -> Command.action -> unit
+  val execute : t -> action -> unit
 end
 
 

@@ -7,7 +7,7 @@ module FileRepository : sig
     
   val read_notes : t -> Note.t list
 
-  val execute : t -> Command.action -> unit
+  val execute : t -> action -> unit
 
   val create : base_dir:string -> file_extension:string -> read_only:bool -> t
 end
@@ -18,7 +18,7 @@ module LoggingFileRepository : sig
     
   val read_notes : t -> Note.t list
 
-  val execute : t -> Command.action -> unit
+  val execute : t -> action -> unit
 
   val create : base_dir:string -> file_extension:string -> read_only:bool -> t
 end

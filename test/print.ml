@@ -30,7 +30,7 @@ let reference r =
 let reference_list l = String.concat " " (List.map reference l)
 
 let action a = 
-  let open Op.Command in
+  let open Op in
   match a with
   | RenameNote (o, n) -> "RenameNote(" ^ (Note.Key.to_string o) ^ ", " ^ (Note.Key.to_string n) ^ ")"
   | WriteNote (n, t) -> "WriteNote(" ^ (Note.Key.to_string n) ^ ", '" ^ t ^ "')"

@@ -1,10 +1,11 @@
+  
+type action = 
+  | WriteNote of Note.Key.t * string
+  | RenameNote of Note.Key.t * Note.Key.t
+
 
 module Command : sig
-  type action = 
-    | WriteNote of Note.Key.t * string
-    | RenameNote of Note.Key.t * Note.Key.t
-
-  type t = Stop | Action of action * t
+  type 'a t = Stop | Action of 'a * 'a t
 end
 
 
@@ -13,12 +14,12 @@ module type Repository = sig
 
   val read_notes : t -> Note.t list
 
-  val execute : t -> Command.action -> unit
+  val execute : t -> action -> unit
 end
 
 
 module MakeCommandRunner : functor (R : Repository) -> sig
-  val run : R.t -> Command.t -> unit
+  val run : R.t -> action Command.t -> unit
 end
 
 
@@ -33,10 +34,10 @@ module Rename : sig
     val parse_pattern : string -> string -> Note.t list -> (Note.Key.t * Note.Key.t) list
   end
 
-  val command : Note.t list -> Note.Key.t -> Note.Key.t -> Command.t
+  val command : Note.t list -> Note.Key.t -> Note.Key.t -> action Command.t
 end
 
-val string_of_action : Command.action -> string
+val string_of_action : action -> string
 
 
 module DotGraph : sig

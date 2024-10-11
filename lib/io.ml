@@ -94,7 +94,7 @@ module FileRepository = struct
     { file_extension = file_ext; base_dir = base_dir; read_only  = read_only }
 
   let execute_action r a = 
-    let open Op.Command in
+    let open Op in
     match a with
       | WriteNote (n, t) -> write_file (to_filename r n) t
       | RenameNote (o, n) -> 
