@@ -69,3 +69,4 @@ Copy the binary to you bin directory:
 
 See also: https://github.com/polyrainbow/neno/
 
+Subtext spec: https://github.com/polyrainbow/subtext

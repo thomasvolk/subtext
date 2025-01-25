@@ -1,5 +1,5 @@
 
-module Key = struct
+module Slug = struct
   type t = { name: string }
 
   let allowed_chars = "[\\p{L}\\p{M}\\d_\\-]"
@@ -10,14 +10,14 @@ module Key = struct
 
   let create n = match is_valid n with
   | true -> { name = n }
-  | false -> raise (Exn.InterruptExecution ("invalid key: " ^ n))
+  | false -> raise (Exn.InterruptExecution ("invalid slug: " ^ n))
 
   let to_string k = k.name
 end
 
 
 type t = {
-  key: Key.t;
+  slug: Slug.t;
   text: string;
 }
 
@@ -27,24 +27,24 @@ module Reference = struct
     | SlashLink
     | WikiLink
 
-  type t = { repr: string; key: Key.t; kind: kind }
+  type t = { repr: string; slug: Slug.t; kind: kind }
 
   module SlashLink = struct 
-    let regex = Re2.create_exn ("(\\s|^)(\\/" ^ Key.allowed_chars ^ "+)+(\\s|$)")
+    let regex = Re2.create_exn ("(\\s|^)(\\/" ^ Slug.allowed_chars ^ "+)+(\\s|$)")
 
-    let to_key r = 
+    let to_slug r = 
       let tr = String.trim r in
       String.sub tr 1 ((String.length tr) - 1)
       |> String.lowercase_ascii
-      |> Key.create
+      |> Slug.create
 
-    let to_repr t = "/" ^ (Key.to_string t)
+    let to_repr t = "/" ^ (Slug.to_string t)
 
     let parse text =
       Re2.get_matches_exn regex text
       |> List.map (fun m -> {
         repr = (String.trim (Re2.Match.get_exn m ~sub:(`Index 0)));
-        key = to_key (Re2.Match.get_exn m ~sub:(`Index 0));
+        slug = to_slug (Re2.Match.get_exn m ~sub:(`Index 0));
         kind = SlashLink
       })
   end
@@ -53,7 +53,7 @@ module Reference = struct
   module WikiLink = struct 
     let regex = Re2.create_exn "\\[\\[([A-Za-z0-9\\/\\-\\s]+)\\]\\]"
 
-    let to_key r = r
+    let to_slug r = r
       |> String.trim
       |> Re2.replace_exn (Re2.create_exn "\\/{3,}") ~f:(fun _ -> " ")
       |> Re2.split (Re2.create_exn "\\/\\/")
@@ -62,17 +62,17 @@ module Reference = struct
       |> List.fold_left Filename.concat ""
       |> Re2.replace_exn (Re2.create_exn "[\\s]+") ~f:(fun _ -> "-")
       |> String.lowercase_ascii
-      |> Key.create
+      |> Slug.create
 
     let parse text =
       Re2.get_matches_exn regex text
       |> List.map (fun m -> {
         repr = Re2.Match.get_exn m ~sub:(`Index 0);
-        key = to_key (Re2.Match.get_exn m ~sub:(`Index 1)); 
+        slug = to_slug (Re2.Match.get_exn m ~sub:(`Index 1)); 
         kind = WikiLink
       })
 
-    let to_repr t = "[[ " ^ ((Key.to_string t)
+    let to_repr t = "[[ " ^ ((Slug.to_string t)
                           |> Re2.replace_exn (Re2.create_exn "\\/") ~f:(fun _ -> "//")
                           |> Re2.replace_exn (Re2.create_exn "\\-") ~f:(fun _ -> " ")
                          ) ^ " ]]"
@@ -84,25 +84,25 @@ module Reference = struct
     | SlashLink -> SlashLink.to_repr name
     | WikiLink -> WikiLink.to_repr name
 
-  let to_tuple r = (r.key, r.repr, r.kind)
+  let to_tuple r = (r.slug, r.repr, r.kind)
 
-  let to_key r = r.key
+  let to_slug r = r.slug
 
-  let replace text old_key new_key =
+  let replace text old_slug new_slug =
       let refs = parse text
-            |> List.filter (fun r -> r.key = old_key)
+            |> List.filter (fun r -> r.slug = old_slug)
       in
       match refs with
         | [] -> None
         | rl -> Some (
-          List.fold_left (fun t r -> Re2.replace_exn (Re2.create_exn (Re2.escape r.repr)) ~f:(fun _ -> (to_repr new_key r.kind)) t) text rl
+          List.fold_left (fun t r -> Re2.replace_exn (Re2.create_exn (Re2.escape r.repr)) ~f:(fun _ -> (to_repr new_slug r.kind)) t) text rl
         )
 
 end
 
 
-let create k t = { key = Key.create k; text = t }
+let create k t = { slug = Slug.create k; text = t }
 
-let key n = n.key 
+let slug n = n.slug 
 
 let text n = n.text 

@@ -1,5 +1,5 @@
 
-module Key : sig
+module Slug : sig
   type t = private { name: string }
 
   val allowed_chars : string
@@ -13,14 +13,14 @@ end
 
 
 type t = {
-  key: Key.t;
+  slug: Slug.t;
   text: string;
 }
 
 
 val create : string -> string -> t
 
-val key : t -> Key.t
+val slug : t -> Slug.t
 
 val text : t -> string
 
@@ -30,16 +30,16 @@ module Reference : sig
     | SlashLink
     | WikiLink
 
-  type t = { repr: string; key: Key.t; kind: kind }
+  type t = { repr: string; slug: Slug.t; kind: kind }
 
   val parse : string -> t list
 
-  val to_key : t -> Key.t
+  val to_slug : t -> Slug.t
 
-  val to_tuple : t -> Key.t * string * kind
+  val to_tuple : t -> Slug.t * string * kind
 
-  val to_repr : Key.t -> kind -> string
+  val to_repr : Slug.t -> kind -> string
 
-  val replace : string -> Key.t -> Key.t -> string option
+  val replace : string -> Slug.t -> Slug.t -> string option
 
 end

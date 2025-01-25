@@ -1,7 +1,7 @@
   
 type action = 
-  | WriteNote of Note.Key.t * string
-  | RenameNote of Note.Key.t * Note.Key.t
+  | WriteNote of Note.Slug.t * string
+  | RenameNote of Note.Slug.t * Note.Slug.t
 
 
 module Command : sig
@@ -31,10 +31,10 @@ module Rename : sig
   end
 
   module Batch : sig
-    val parse_pattern : string -> string -> Note.t list -> (Note.Key.t * Note.Key.t) list
+    val parse_pattern : string -> string -> Note.t list -> (Note.Slug.t * Note.Slug.t) list
   end
 
-  val command : Note.t list -> Note.Key.t -> Note.Key.t -> action Command.t
+  val command : Note.t list -> Note.Slug.t -> Note.Slug.t -> action Command.t
 end
 
 val string_of_action : action -> string

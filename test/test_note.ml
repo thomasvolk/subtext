@@ -6,11 +6,11 @@ let tests =
   let first t = Reference.parse t 
     |> List.hd 
     |> Reference.to_tuple 
-    |> (fun (k, _, _) -> Note.Key.to_string k) in
+    |> (fun (k, _, _) -> Note.Slug.to_string k) in
 
   "Note" >::: [
     "is_valid_note_name" >:: (fun _ -> 
-      let is_valid = Note.Key.is_valid in
+      let is_valid = Note.Slug.is_valid in
 
       assert_bool "empty name must not be valid" (not (is_valid ""));
 
@@ -36,14 +36,14 @@ let tests =
     "find_references" >:: (fun _ ->
       assert_equal ~printer:Print.reference_tuple_list
       [
-        ((Note.Key.create "foo"), "/foo", Reference.SlashLink );
-        ((Note.Key.create "foo-bar"), "[[ Foo bar ]]", Reference.WikiLink );
+        ((Note.Slug.create "foo"), "/foo", Reference.SlashLink );
+        ((Note.Slug.create "foo-bar"), "[[ Foo bar ]]", Reference.WikiLink );
       ]
       (Reference.parse "1 2 3 /foo 4 5 6 [[ Foo bar ]] [[ # invalid ]]  http://invalid.de ./invalid" |> List.map Reference.to_tuple);
 
       assert_equal ~printer:Print.reference_tuple_list
       [
-        ((Note.Key.create "foo-1/bar"), "[[ Foo 1 // bar ]]", Reference.WikiLink );
+        ((Note.Slug.create "foo-1/bar"), "[[ Foo 1 // bar ]]", Reference.WikiLink );
       ]
       (Reference.parse " [[ Foo 1 // bar ]] " |> List.map Reference.to_tuple);
     );
@@ -67,23 +67,23 @@ let tests =
     "replace" >:: (fun _ ->
       assert_equal ~printer:Print.s_option
         None 
-        (Reference.replace "" (Key.create "foo") (Key.create "bar"));
+        (Reference.replace "" (Slug.create "foo") (Slug.create "bar"));
 
       assert_equal ~printer:Print.s_option 
         (Some "/bar") 
-        (Reference.replace "/foo" (Key.create "foo") (Key.create "bar"));
+        (Reference.replace "/foo" (Slug.create "foo") (Slug.create "bar"));
 
       assert_equal ~printer:Print.s_option 
         (Some"### /bar ###") 
-        (Reference.replace "### /foo ###" (Key.create "foo") (Key.create "bar"));
+        (Reference.replace "### /foo ###" (Slug.create "foo") (Slug.create "bar"));
 
       assert_equal ~printer:Print.s_option 
         (Some"### [[ bar//1//2 a ]] ###") 
-        (Reference.replace "### [[ foo 1 ]] ###" (Key.create "foo-1") (Key.create "bar/1/2-a"));
+        (Reference.replace "### [[ foo 1 ]] ###" (Slug.create "foo-1") (Slug.create "bar/1/2-a"));
 
       assert_equal ~printer:Print.s_option 
         None 
-        (Reference.replace "/x12 /bar 7 /f" (Key.create "foo") (Key.create "bar"));
+        (Reference.replace "/x12 /bar 7 /f" (Slug.create "foo") (Slug.create "bar"));
     );
   ]
 

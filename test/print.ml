@@ -7,7 +7,7 @@ let s_option o = match o with
   | Some(s) -> "Some(" ^ s ^ ")"
 
 let note n = 
-  "Note(key=" ^ (Note.Key.to_string (Note.key n))  ^ ", text=" ^ (Note.text n) ^ ")"
+  "Note(slug=" ^ (Note.Slug.to_string (Note.slug n))  ^ ", text=" ^ (Note.text n) ^ ")"
 
 let note_list l = String.concat " " (List.map note l)
 
@@ -15,7 +15,7 @@ let reference_kind = function
 | Note.Reference.WikiLink -> "WikiLink"
 | Note.Reference.SlashLink -> "SlashLink"
 
-let reference_tuple (k, r, kd) = (Note.Key.to_string k) ^ ", " ^ r ^ ", " ^ (reference_kind kd) 
+let reference_tuple (k, r, kd) = (Note.Slug.to_string k) ^ ", " ^ r ^ ", " ^ (reference_kind kd) 
 
 let reference_tuple_list l = List.map reference_tuple l |> String.concat " - "
 
@@ -25,15 +25,15 @@ let reference r =
    | SlashLink -> "SlashLink"
    | WikiLink -> "WikiLink"
   in 
-    kind ^ "(repr=" ^ r.repr ^ ", name=" ^ (Note.Key.to_string r.key) ^ "))"
+    kind ^ "(repr=" ^ r.repr ^ ", name=" ^ (Note.Slug.to_string r.slug) ^ "))"
 
 let reference_list l = String.concat " " (List.map reference l)
 
 let action a = 
   let open Op in
   match a with
-  | RenameNote (o, n) -> "RenameNote(" ^ (Note.Key.to_string o) ^ ", " ^ (Note.Key.to_string n) ^ ")"
-  | WriteNote (n, t) -> "WriteNote(" ^ (Note.Key.to_string n) ^ ", '" ^ t ^ "')"
+  | RenameNote (o, n) -> "RenameNote(" ^ (Note.Slug.to_string o) ^ ", " ^ (Note.Slug.to_string n) ^ ")"
+  | WriteNote (n, t) -> "WriteNote(" ^ (Note.Slug.to_string n) ^ ", '" ^ t ^ "')"
 
 let command c =
   let open Op.Command in
@@ -44,6 +44,6 @@ let command c =
   join c ""
 
 let batch_list l =
-  String.concat " " (List.map (fun (a, b) -> (Note.Key.to_string a) ^ "->" ^ (Note.Key.to_string b)) l)
+  String.concat " " (List.map (fun (a, b) -> (Note.Slug.to_string a) ^ "->" ^ (Note.Slug.to_string b)) l)
 
-let note_key = Note.Key.to_string
+let note_slug = Note.Slug.to_string

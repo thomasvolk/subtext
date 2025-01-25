@@ -82,10 +82,10 @@ module FileRepository = struct
     traverse r.base_dir 
       |> List.filter (fun f -> (Filename.extension f) = ("." ^ r.file_extension))
       |> List.map (note_from_file r)
-      |> List.sort (fun n1 n2 -> compare (Note.key n1) (Note.key n2))
+      |> List.sort (fun n1 n2 -> compare (Note.slug n1) (Note.slug n2))
 
   let to_filename r k =
-    Filename.concat r.base_dir ((Note.Key.to_string k) ^ "." ^ r.file_extension)
+    Filename.concat r.base_dir ((Note.Slug.to_string k) ^ "." ^ r.file_extension)
 
   let create ~base_dir:base_dir ~file_extension:file_extension ~read_only:read_only = 
     let file_ext = if (String.length file_extension) = 0
