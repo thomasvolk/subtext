@@ -19,6 +19,8 @@ let tests base_dir =
 
 /foo
 
+/image01.png
+
 hello this is a [[wiki link]]
 
 /sub/bar

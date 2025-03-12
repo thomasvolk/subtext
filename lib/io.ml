@@ -76,12 +76,14 @@ module FileRepository = struct
      loop cnt (split p)
 
   let note_from_file r f =
-    Note.create (Filename.chop_extension (chop_base_dir r f)) (read_file f)
+    (Filename.chop_extension (chop_base_dir r f), read_file f)
 
   let read_notes r =
     traverse r.base_dir 
       |> List.filter (fun f -> (Filename.extension f) = ("." ^ r.file_extension))
       |> List.map (note_from_file r)
+      |> List.filter (fun (slug, _) -> Note.Slug.is_valid slug)
+      |> List.map (fun (slug, text) -> Note.create slug text)
       |> List.sort (fun n1 n2 -> compare (Note.slug n1) (Note.slug n2))
 
   let to_filename r k =
