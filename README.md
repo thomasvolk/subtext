@@ -65,6 +65,10 @@ Copy the binary to you bin directory:
 
     cp _build/install/default/bin/subtext /usr/local/bin 
 
+Format code
+
+    dune fmt 
+
 ## Links
 
 See also: https://github.com/polyrainbow/neno/
