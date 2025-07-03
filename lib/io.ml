@@ -14,7 +14,7 @@ module FileRepository = struct
 
   let traverse dir =
     let rec loop result = function
-      (* by not following the symlinks we handle symlics pointing to a dir as file *)
+      (* by not following the symlinks we handle symlinks pointing to a dir as file *)
       | f :: tl when is_directory f ->
           Sys_unix.ls_dir f
           |> List.map (Filename.concat f)
